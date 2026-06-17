@@ -5,7 +5,7 @@ public class UIManager : MonoBehaviour
 {
 
     [Header("References")]
-    [SerializeField] private ImageTrackedCollectibles collectibles;
+    [SerializeField] private ImageTrackedChickenCoop collectibles;
     [SerializeField] private PlayerStats playerStats;
     [SerializeField] private CountdownTimer countdownTimer;
 
@@ -33,7 +33,7 @@ public class UIManager : MonoBehaviour
 
         if (statusText != null)
         {
-            statusText.text = "Collectibles: Ready";
+            statusText.text = "Find Chickens, find the coop";
         }
     }
 
@@ -60,7 +60,7 @@ public class UIManager : MonoBehaviour
     {
         if (statusText != null)
         {
-            statusText.text = $"Collectibles: {status}";
+            statusText.text = $"Coop in sight: {status}";
         }
     }
 
@@ -73,12 +73,12 @@ public class UIManager : MonoBehaviour
 
         if (collectedText != null)
         {
-            collectedText.text = $"Collected: {playerStats.CollectedCount}";
+            collectedText.text = $"Chickens in coop: {playerStats.ChickensInCoop}";
         }
 
         if (pointsText != null)
         {
-            pointsText.text = $"Points: {playerStats.TotalPoints}";
+            pointsText.text = $"Chickens in hand: {playerStats.ChickensInHand}";
         }
     }
 }

@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using UnityEngine;
 
 public class PlayerStats : MonoBehaviour
@@ -6,8 +7,9 @@ public class PlayerStats : MonoBehaviour
     private const string TotalPointsKey = "player_total_points";
     private const string CollectedCountKey = "player_collected_count";
 
-    public int TotalPoints { get; private set; }
-    public int CollectedCount { get; private set; }
+    public int ChickensInHand { get; private set; } = 100;
+    public int ChickensInCoop { get; private set; }
+    private bool isCounting;
 
     public event Action StatsChanged;
 
@@ -18,8 +20,8 @@ public class PlayerStats : MonoBehaviour
 
     public void Load()
     {
-        TotalPoints = PlayerPrefs.GetInt(TotalPointsKey, 0);
-        CollectedCount = PlayerPrefs.GetInt(CollectedCountKey, 0);
+        ChickensInHand = PlayerPrefs.GetInt(TotalPointsKey, 100);
+        ChickensInCoop = PlayerPrefs.GetInt(CollectedCountKey, 0);
         StatsChanged?.Invoke();
     }
 
@@ -48,23 +50,23 @@ public class PlayerStats : MonoBehaviour
 
         PlayerPrefs.SetInt(GetCollectedKey(collectibleId), 1);
 
-        TotalPoints += points;
-        CollectedCount++;
+        ChickensInHand++;
+        // ChickensInCoop++;
 
-        PlayerPrefs.SetInt(TotalPointsKey, TotalPoints);
-        PlayerPrefs.SetInt(CollectedCountKey, CollectedCount);
+        PlayerPrefs.SetInt(TotalPointsKey, ChickensInHand);
+        PlayerPrefs.SetInt(CollectedCountKey, ChickensInCoop);
         PlayerPrefs.Save();
 
         StatsChanged?.Invoke();
-        Debug.Log($"PlayerStats: collected '{collectibleId}'. Points: {TotalPoints}, collected: {CollectedCount}.");
+        Debug.Log($"PlayerStats: collected '{collectibleId}'. InHand: {ChickensInHand}, InCoop: {ChickensInCoop}.");
         return true;
     }
 
     public void ResetAllProgressInThisApp()
     {
         PlayerPrefs.DeleteAll();
-        TotalPoints = 0;
-        CollectedCount = 0;
+        ChickensInHand = 0;
+        ChickensInCoop = 0;
         PlayerPrefs.Save();
         StatsChanged?.Invoke();
         Debug.Log("PlayerStats: progress reset.");
@@ -73,5 +75,37 @@ public class PlayerStats : MonoBehaviour
     private static string GetCollectedKey(string collectibleId)
     {
         return $"collected_{collectibleId}";
+    }
+
+    public void PutChickensInCoop()
+    {
+        if (isCounting) return;
+        StartCoroutine(CountChickensIntoCoop());
+    }
+
+    private IEnumerator CountChickensIntoCoop()
+    {
+        isCounting = true;
+
+        int chickensToMove = ChickensInHand;
+
+        if (chickensToMove <= 0)
+        {
+            isCounting = false;
+            yield break;
+        }
+
+        float duration = 1f;
+        float delay = duration / chickensToMove;
+
+        for (int i = 0; i < chickensToMove; i++)
+        {
+            ChickensInHand--;
+            ChickensInCoop++;
+
+            yield return new WaitForSeconds(delay);
+        }
+
+        isCounting = false;
     }
 }
