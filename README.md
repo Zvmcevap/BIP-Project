@@ -56,7 +56,7 @@ The main gameplay loop is:
 
 ## Screenshots / Game Assets
 
-### Logo
+### Logo of BIP Project
 
 <p align="center">
   <img src="Assets/Materials/Logo.png" alt="Logo" width="260">
@@ -66,36 +66,6 @@ The main gameplay loop is:
 
 <p align="center">
   <img src="Assets/Sprites/ChickenRun.png" alt="Chicken Run" width="420">
-</p>
-
-### Chicken Marker / Chicken Image
-
-<p align="center">
-  <img src="Assets/Sprites/ChickenPicture.png" alt="Chicken Picture" width="260">
-</p>
-
-### Start Button
-
-<p align="center">
-  <img src="Assets/Sprites/start.png" alt="Start Button" width="220">
-</p>
-
-### UI Buttons
-
-<p align="center">
-  <img src="Assets/Materials/buttons.png" alt="Buttons" width="320">
-</p>
-
-### Search / AR Detection Icon
-
-<p align="center">
-  <img src="Assets/Sprites/magnifying-glass.png" alt="Magnifying Glass Icon" width="120">
-</p>
-
-### Refresh Icon
-
-<p align="center">
-  <img src="Assets/Sprites/—Pngtree—white refresh icon_4543883.png" alt="Refresh Icon" width="120">
 </p>
 
 ---
