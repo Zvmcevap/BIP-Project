@@ -124,10 +124,6 @@ public class ImageTrackedCollectibles : MonoBehaviour
 
     private void Update()
     {
-        if (TryGetPressPosition(out var screenPosition))
-        {
-            TryCollectAtScreenPosition(screenPosition);
-        }
     }
 
     private void OnTrackedImagesChanged(ARTrackablesChangedEventArgs<ARTrackedImage> args)
@@ -227,47 +223,6 @@ public class ImageTrackedCollectibles : MonoBehaviour
         spawnedObjectsByTrackableId.Add(trackableId, collectibleObject);
 
         return collectibleObject;
-    }
-
-    private void TryCollectAtScreenPosition(Vector2 screenPosition)
-    {
-        if (arCamera == null)
-        {
-            SetStatus("Missing AR Camera.");
-            return;
-        }
-
-        var ray = arCamera.ScreenPointToRay(screenPosition);
-
-        if (!Physics.Raycast(ray, out var hit, float.PositiveInfinity, ~0, QueryTriggerInteraction.Collide))
-        {
-            return;
-        }
-
-        var collectible = hit.collider.GetComponentInParent<ImageTrackedCollectibleInstance>();
-
-        if (collectible == null)
-        {
-            return;
-        }
-
-        var collected = playerStats == null || playerStats.Collect(collectible.CollectibleId, collectible.Points);
-
-        if (!collected)
-        {
-            SetStatus($"'{collectible.CollectibleId}' was already collected.");
-            collectible.gameObject.SetActive(false);
-            return;
-        }
-
-        collectible.gameObject.SetActive(false);
-
-        // Notify all listeners that a collectible has been collected.
-        // AudioManager can play a sound for this collectible id.
-        // Quest or achievement systems can also react here.
-        CollectibleCollected?.Invoke(collectible.CollectibleId);
-
-        SetStatus($"Collected '{collectible.CollectibleId}' (+{collectible.Points}).");
     }
 
     private void HideObject(TrackableId trackableId)

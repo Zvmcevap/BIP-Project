@@ -11,6 +11,7 @@ public class ChickenSpawner : MonoBehaviour
     [Header("Prefab")]
     [Tooltip("Assign chicken prefab here. A yellow capsule placeholder is used until the real asset arrives.")]
     [SerializeField] private GameObject chickenPrefab;
+    [SerializeField] private GameObject roosterPrefab;
 
     [Header("AR References")]
     [SerializeField] private ARPlaneManager planeManager;
@@ -20,8 +21,10 @@ public class ChickenSpawner : MonoBehaviour
     [Header("Spawning")]
     [SerializeField] private float spawnInterval = 4f;
     [SerializeField] private int maxActiveChickens = 5;
+    [SerializeField] private int maxActiveRoosters = 1;
+
     [SerializeField] private int chickenPoints = 10;
-    [SerializeField] private Vector3 chickenScale = new Vector3(0.15f, 0.15f, 0.15f);
+    [SerializeField, Range(0.0001f, 0.01f)] private float chickenScale = 0.1f;
 
     [Header("Speed Scaling")]
     [Tooltip("Speed boost added per catch (0.15 = +15% per catch, reaches 5x at ~27 catches).")]
@@ -29,13 +32,32 @@ public class ChickenSpawner : MonoBehaviour
     [Tooltip("Maximum allowed speed multiplier.")]
     [SerializeField] private float maxSpeedMultiplier = 5f;
 
+    [Header("Catch Effects")]
+    [SerializeField] private AudioClip chickenCatchSound;
+    [SerializeField] private AudioClip roosterCatchSound;
+
+
+    [Header("Smoke Effect")]
+    [SerializeField, Range(1f, 30f)] private float smokeSize = 12f;
+    [SerializeField, Range(10f, 100f)] private float smokeSpeed = 50f;
+    [SerializeField, Range(4, 24)] private int smokeCount = 12;
+    [SerializeField, Range(0.2f, 2f)] private float smokeLifetime = 0.6f;
+    [SerializeField, Range(0f, 3f)] private float smokeCloudRadius = 1f;
+
+    [Header("Stars Effect")]
+    [SerializeField, Range(1f, 15f)] private float starsSize = 4f;
+    [SerializeField, Range(20f, 200f)] private float starsSpeed = 90f;
+    [SerializeField, Range(2, 20)] private int starsCount = 8;
+    [SerializeField, Range(0.1f, 1f)] private float starsLifetime = 0.4f;
+
     // Raised after each successful catch; arg is the total catch count this session.
     public event Action<int> ChickenCaught;
-
     private int totalCatches;
     private float spawnTimer;
     private readonly List<ChickenBehaviour> activeChickens = new();
+    private readonly List<ChickenBehaviour> activeRoosters = new();
     private string debugStatus = "Initialising...";
+    private AudioSource audioSource;
 
     private float CurrentSpeedMultiplier =>
         Mathf.Min(1f + totalCatches * speedIncrementPerCatch, maxSpeedMultiplier);
@@ -44,6 +66,8 @@ public class ChickenSpawner : MonoBehaviour
     {
         if (arCamera == null)
             arCamera = Camera.main;
+        audioSource = gameObject.AddComponent<AudioSource>();
+        audioSource.playOnAwake = false;
     }
 
     private void Update()
@@ -85,30 +109,54 @@ public class ChickenSpawner : MonoBehaviour
             return;
         }
 
+        bool spawnRooster = activeRoosters.Count < maxActiveRoosters;
+
         var plane = planes[UnityEngine.Random.Range(0, planes.Count)];
         var position = GetRandomPositionOnPlane(plane);
+        GameObject chickenObj;
+        if (spawnRooster)
+        {
+            chickenObj = roosterPrefab != null
+                ? Instantiate(roosterPrefab, position, Quaternion.identity)
+                : CreatePlaceholderChicken(position);
+        }
+        else
+        {
+            chickenObj = chickenPrefab != null
+                ? Instantiate(chickenPrefab, position, Quaternion.identity)
+                : CreatePlaceholderChicken(position);
+        }
 
-        var chickenObj = chickenPrefab != null
-            ? Instantiate(chickenPrefab, position, Quaternion.identity)
-            : CreatePlaceholderChicken(position);
-
-        chickenObj.transform.localScale = chickenScale;
+        chickenObj.transform.localScale = Vector3.one * chickenScale;
+        if (!spawnRooster)
+        {
+            chickenObj.transform.localScale *= 0.4f;
+        }
 
         var chicken = chickenObj.GetComponent<ChickenBehaviour>();
         if (chicken == null)
             chicken = chickenObj.AddComponent<ChickenBehaviour>();
 
+        chicken.IsRooster = spawnRooster;
         if (chickenObj.GetComponentInChildren<Collider>() == null)
         {
             var col = chickenObj.AddComponent<SphereCollider>();
-            col.radius = 0.5f;
+            col.radius = 0.5f / chickenScale;
         }
 
-        var id = $"chicken_{Guid.NewGuid():N}".Substring(0, 16);
-        chicken.Configure(id, chickenPoints, plane.normal);
+        var id = $"chicken_{Guid.NewGuid():N}"[..16];
+        if (spawnRooster)
+        {
+            chicken.Configure(id, chickenPoints, true, plane.normal);
+            activeRoosters.Add(chicken);
+        }
+        else
+        {
+            chicken.Configure(id, chickenPoints, false, plane.normal);
+            activeChickens.Add(chicken);
+        }
         chicken.SpeedMultiplier = CurrentSpeedMultiplier;
 
-        activeChickens.Add(chicken);
         debugStatus = $"Spawned! Planes: {planes.Count} | Chickens: {activeChickens.Count} | Speed: {CurrentSpeedMultiplier:F1}x";
     }
 
@@ -133,10 +181,19 @@ public class ChickenSpawner : MonoBehaviour
 
     private void CatchChicken(ChickenBehaviour chicken)
     {
-        if (!activeChickens.Contains(chicken))
-            return;
+        if (chicken.IsRooster)
+        {
+            if (!activeRoosters.Contains(chicken))
+                return;
+            activeRoosters.Remove(chicken);
+        }
+        else
+        {
+            if (!activeChickens.Contains(chicken))
+                return;
+            activeChickens.Remove(chicken);
+        }
 
-        activeChickens.Remove(chicken);
         totalCatches++;
 
         var multiplier = CurrentSpeedMultiplier;
@@ -147,12 +204,137 @@ public class ChickenSpawner : MonoBehaviour
         }
 
         if (playerStats != null)
-            playerStats.Collect(chicken.ChickenId, chicken.Points);
+            playerStats.Collect(chicken.ChickenId, chicken.IsRooster);
+
+        SpawnFeatherBurst(chicken.transform.position);
+
+        if (audioSource != null && chickenCatchSound != null)
+        {
+            if (chicken.IsRooster)
+            {
+                audioSource.PlayOneShot(roosterCatchSound);
+            }
+            else
+            {
+                audioSource.PlayOneShot(chickenCatchSound);
+            }
+        }
 
         Destroy(chicken.gameObject);
         ChickenCaught?.Invoke(totalCatches);
 
         Debug.Log($"ChickenSpawner: catch #{totalCatches}, speed now {multiplier:F2}x.");
+    }
+
+    public void SpawnFeatherBurst(Vector3 position)
+    {
+        var mat = new Material(Shader.Find("Universal Render Pipeline/Particles/Unlit")
+            ?? Shader.Find("Particles/Standard Unlit")
+            ?? Shader.Find("Sprites/Default"));
+
+        var root = new GameObject("CartoonFightBurst");
+        root.transform.position = position;
+
+        // Layer 1: big white puffy smoke clouds
+        AddSmokeLayer(root, mat);
+
+        // Layer 2: yellow stars shooting outward
+        AddStarsLayer(root, mat);
+
+        Destroy(root, 1.5f);
+    }
+
+    private void AddSmokeLayer(GameObject root, Material mat)
+    {
+        var ps = root.AddComponent<ParticleSystem>();
+        var main = ps.main;
+        main.duration = 0.3f;
+        main.loop = false;
+        main.startLifetime = new ParticleSystem.MinMaxCurve(smokeLifetime * 0.6f, smokeLifetime);
+        main.startSpeed = new ParticleSystem.MinMaxCurve(chickenScale * smokeSpeed * 0.6f, chickenScale * smokeSpeed);
+        main.startSize = new ParticleSystem.MinMaxCurve(chickenScale * smokeSize * 0.6f, chickenScale * smokeSize);
+        main.startColor = new ParticleSystem.MinMaxGradient(Color.white, new Color(0.85f, 0.85f, 0.85f));
+        main.gravityModifier = -0.1f;
+        main.stopAction = ParticleSystemStopAction.None;
+
+        var emission = ps.emission;
+        emission.SetBursts(new[] { new ParticleSystem.Burst(0f, smokeCount) });
+
+        var shape = ps.shape;
+        shape.shapeType = ParticleSystemShapeType.Sphere;
+        shape.radius = chickenScale * smokeCloudRadius;
+
+        // Puffs grow as they move outward
+        var sol = ps.sizeOverLifetime;
+        sol.enabled = true;
+        var growCurve = new AnimationCurve(
+            new Keyframe(0f, 0.3f),
+            new Keyframe(0.25f, 1f),
+            new Keyframe(1f, 1.4f));
+        sol.size = new ParticleSystem.MinMaxCurve(1f, growCurve);
+
+        // Fade out
+        var col = ps.colorOverLifetime;
+        col.enabled = true;
+        var grad = new Gradient();
+        grad.SetKeys(
+            new[] { new GradientColorKey(Color.white, 0f), new GradientColorKey(Color.white, 1f) },
+            new[] { new GradientAlphaKey(1f, 0f), new GradientAlphaKey(1f, 0.4f), new GradientAlphaKey(0f, 1f) });
+        col.color = new ParticleSystem.MinMaxGradient(grad);
+
+        var renderer = root.GetComponent<ParticleSystemRenderer>();
+        renderer.material = mat;
+        renderer.sortingOrder = 10;
+
+        ps.Play();
+    }
+
+    private void AddStarsLayer(GameObject root, Material mat)
+    {
+        var starsGO = new GameObject("Stars");
+        starsGO.transform.SetParent(root.transform, false);
+
+        var ps = starsGO.AddComponent<ParticleSystem>();
+        var main = ps.main;
+        main.duration = 0.2f;
+        main.loop = false;
+        main.startLifetime = new ParticleSystem.MinMaxCurve(starsLifetime * 0.6f, starsLifetime);
+        main.startSpeed = new ParticleSystem.MinMaxCurve(chickenScale * starsSpeed * 0.6f, chickenScale * starsSpeed);
+        main.startSize = new ParticleSystem.MinMaxCurve(chickenScale * starsSize * 0.6f, chickenScale * starsSize);
+        main.startColor = new ParticleSystem.MinMaxGradient(new Color(1f, 0.95f, 0.2f), new Color(1f, 0.6f, 0.1f));
+        main.gravityModifier = 0.2f;
+        main.stopAction = ParticleSystemStopAction.None;
+
+        var emission = ps.emission;
+        emission.SetBursts(new[] { new ParticleSystem.Burst(0f, starsCount) });
+
+        var shape = ps.shape;
+        shape.shapeType = ParticleSystemShapeType.Sphere;
+        shape.radius = chickenScale * 0.2f;
+
+        // Stars shrink as they fly out
+        var sol = ps.sizeOverLifetime;
+        sol.enabled = true;
+        var shrinkCurve = new AnimationCurve(
+            new Keyframe(0f, 1f),
+            new Keyframe(0.5f, 0.8f),
+            new Keyframe(1f, 0f));
+        sol.size = new ParticleSystem.MinMaxCurve(1f, shrinkCurve);
+
+        // Fade out at the end
+        var col = ps.colorOverLifetime;
+        col.enabled = true;
+        var grad = new Gradient();
+        grad.SetKeys(
+            new[] { new GradientColorKey(new Color(1f, 1f, 0.3f), 0f), new GradientColorKey(new Color(1f, 0.4f, 0f), 1f) },
+            new[] { new GradientAlphaKey(1f, 0f), new GradientAlphaKey(1f, 0.6f), new GradientAlphaKey(0f, 1f) });
+        col.color = new ParticleSystem.MinMaxGradient(grad);
+
+        var renderer = starsGO.GetComponent<ParticleSystemRenderer>();
+        renderer.material = mat;
+        renderer.sortingOrder = 11;
+
+        ps.Play();
     }
 
     private static Vector3 GetRandomPositionOnPlane(ARPlane plane)

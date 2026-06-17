@@ -13,6 +13,8 @@ public class UIManager : MonoBehaviour
     [SerializeField] private TMP_Text collectedText;
     [SerializeField] private TMP_Text pointsText;
 
+    [SerializeField] private TMP_Text RoostersInHandText;
+    [SerializeField] private TMP_Text RoostersInCoopText;
 
     private void OnEnable()
     {
@@ -33,7 +35,7 @@ public class UIManager : MonoBehaviour
 
         if (statusText != null)
         {
-            statusText.text = "Find Chickens, find the coop";
+            statusText.text = "Click Chickens, find the coop";
         }
     }
 
@@ -60,7 +62,7 @@ public class UIManager : MonoBehaviour
     {
         if (statusText != null)
         {
-            statusText.text = $"Coop in sight: {status}";
+            statusText.text = $"{status}";
         }
     }
 
@@ -73,12 +75,20 @@ public class UIManager : MonoBehaviour
 
         if (collectedText != null)
         {
-            collectedText.text = $"Chickens in coop: {playerStats.ChickensInCoop}";
+            collectedText.text = $"Chickens in Coop {playerStats.ChickensInCoop}";
         }
 
         if (pointsText != null)
         {
             pointsText.text = $"Chickens in hand: {playerStats.ChickensInHand}";
+        }
+        if (RoostersInHandText != null)
+        {
+            RoostersInHandText.text = $"Roosters in hand: {playerStats.RoostersInHand}";
+        }
+        if (RoostersInCoopText != null)
+        {
+            RoostersInCoopText.text = $"Roosters in coop: {playerStats.RoostersInCoop}";
         }
     }
 }

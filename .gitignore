@@ -20,3 +20,8 @@ Library/Bee/
 
 *.apk
 *.aab
+
+# Unity build output (auto-generated, do not commit)
+*_BackUpThisFolder_ButDontShipItWithYourGame/
+.utmp/
+Library/Bee/

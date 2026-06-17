@@ -1,27 +1,44 @@
 using System;
 using System.Collections;
+using Unity.Mathematics;
 using UnityEngine;
 
 public class PlayerStats : MonoBehaviour
 {
     private const string TotalPointsKey = "player_total_points";
     private const string CollectedCountKey = "player_collected_count";
+    private const string RoostersInHandKey = "player_roosters_in_hand";
+    private const string RoostersInCoopKey = "player_roosters_in_coop";
 
-    public int ChickensInHand { get; private set; } = 100;
+    [SerializeField] private Camera arCamera;
+    [SerializeField] private ChickenSpawner cs;
+    AudioSource audioSource;
+    [SerializeField] AudioClip putInCoopSound;
+    public int ChickensInHand { get; private set; }
     public int ChickensInCoop { get; private set; }
-    private bool isCounting;
+
+    public int RoostersInHand { get; private set; }
+    public int RoostersInCoop { get; private set; }
+
+    private bool isCountingChickens;
 
     public event Action StatsChanged;
 
     private void Awake()
     {
         Load();
+        if (arCamera == null)
+            arCamera = Camera.main;
+        audioSource = gameObject.AddComponent<AudioSource>();
+        audioSource.playOnAwake = false;
     }
 
     public void Load()
     {
-        ChickensInHand = PlayerPrefs.GetInt(TotalPointsKey, 100);
+        ChickensInHand = PlayerPrefs.GetInt(TotalPointsKey, 0);
         ChickensInCoop = PlayerPrefs.GetInt(CollectedCountKey, 0);
+        RoostersInHand = PlayerPrefs.GetInt(RoostersInHandKey, 0);
+        RoostersInCoop = PlayerPrefs.GetInt(RoostersInCoopKey, 0);
         StatsChanged?.Invoke();
     }
 
@@ -35,7 +52,7 @@ public class PlayerStats : MonoBehaviour
         return PlayerPrefs.GetInt(GetCollectedKey(collectibleId), 0) == 1;
     }
 
-    public bool Collect(string collectibleId, int points)
+    public bool Collect(string collectibleId, bool isRooster)
     {
         if (string.IsNullOrWhiteSpace(collectibleId))
         {
@@ -50,15 +67,19 @@ public class PlayerStats : MonoBehaviour
 
         PlayerPrefs.SetInt(GetCollectedKey(collectibleId), 1);
 
-        ChickensInHand++;
-        // ChickensInCoop++;
+        if (isRooster)
+        {
+            RoostersInHand++;
+            PlayerPrefs.SetInt(RoostersInHandKey, RoostersInHand);
+        }
+        else
+        {
+            ChickensInHand++;
+            PlayerPrefs.SetInt(TotalPointsKey, ChickensInHand);
+        }
 
-        PlayerPrefs.SetInt(TotalPointsKey, ChickensInHand);
-        PlayerPrefs.SetInt(CollectedCountKey, ChickensInCoop);
         PlayerPrefs.Save();
-
         StatsChanged?.Invoke();
-        Debug.Log($"PlayerStats: collected '{collectibleId}'. InHand: {ChickensInHand}, InCoop: {ChickensInCoop}.");
         return true;
     }
 
@@ -67,6 +88,8 @@ public class PlayerStats : MonoBehaviour
         PlayerPrefs.DeleteAll();
         ChickensInHand = 0;
         ChickensInCoop = 0;
+        RoostersInHand = 0;
+        RoostersInCoop = 0;
         PlayerPrefs.Save();
         StatsChanged?.Invoke();
         Debug.Log("PlayerStats: progress reset.");
@@ -77,21 +100,21 @@ public class PlayerStats : MonoBehaviour
         return $"collected_{collectibleId}";
     }
 
-    public void PutChickensInCoop()
+    public void PutChickensInCoop(Vector3 pos)
     {
-        if (isCounting) return;
-        StartCoroutine(CountChickensIntoCoop());
+        if (isCountingChickens) return;
+        StartCoroutine(CountChickensIntoCoop(pos));
     }
 
-    private IEnumerator CountChickensIntoCoop()
+    private IEnumerator CountChickensIntoCoop(Vector3 pos)
     {
-        isCounting = true;
+        isCountingChickens = true;
 
-        int chickensToMove = ChickensInHand;
+        int chickensToMove = math.max(ChickensInHand, RoostersInHand);
 
         if (chickensToMove <= 0)
         {
-            isCounting = false;
+            isCountingChickens = false;
             yield break;
         }
 
@@ -100,12 +123,26 @@ public class PlayerStats : MonoBehaviour
 
         for (int i = 0; i < chickensToMove; i++)
         {
-            ChickensInHand--;
-            ChickensInCoop++;
-
+            if (ChickensInHand > 0)
+            {
+                ChickensInHand--;
+                ChickensInCoop++;
+            }
+            if (RoostersInHand > 0)
+            {
+                RoostersInHand--;
+                RoostersInCoop++;
+            }
+            PlayerPrefs.SetInt(TotalPointsKey, ChickensInHand);
+            PlayerPrefs.SetInt(CollectedCountKey, ChickensInCoop);
+            PlayerPrefs.SetInt(RoostersInHandKey, RoostersInHand);
+            PlayerPrefs.SetInt(RoostersInCoopKey, RoostersInCoop);
+            PlayerPrefs.Save();
+            StatsChanged?.Invoke();
+            cs.SpawnFeatherBurst(pos);
+            audioSource.PlayOneShot(putInCoopSound);
             yield return new WaitForSeconds(delay);
         }
-
-        isCounting = false;
+        isCountingChickens = false;
     }
 }

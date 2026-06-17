@@ -59,7 +59,20 @@ public class ImageTrackedChickenCoop : MonoBehaviour
 
     private string status = "Point camera at the chicken coop marker.";
 
-    public bool ChickenCoopInSight { get; private set; }
+    private bool _chickenCoopInSight = false;
+    private Vector3 coopPosition;
+    public bool ChickenCoopInSight
+    {
+        get { return _chickenCoopInSight; }
+        private set
+        {
+            _chickenCoopInSight = value;
+            if (_chickenCoopInSight)
+            {
+                playerStats.PutChickensInCoop(coopPosition);
+            }
+        }
+    }
     public bool ChickenCoopWasClicked { get; private set; }
 
     public event Action<string> StatusChanged;
@@ -122,7 +135,7 @@ public class ImageTrackedChickenCoop : MonoBehaviour
     {
         if (TryGetPressPosition(out var screenPosition))
         {
-            TryClickAtScreenPosition(screenPosition);
+            // TryClickAtScreenPosition(screenPosition);
         }
     }
 
@@ -235,42 +248,11 @@ public class ImageTrackedChickenCoop : MonoBehaviour
         }
 
         spawnedObjectsByTrackableId.Add(trackableId, coopObject);
+        coopPosition = coopObject.transform.position;
 
         return coopObject;
     }
 
-    private void TryClickAtScreenPosition(Vector2 screenPosition)
-    {
-        if (arCamera == null)
-        {
-            SetStatus("Missing AR Camera.");
-            return;
-        }
-
-        var ray = arCamera.ScreenPointToRay(screenPosition);
-
-        if (!Physics.Raycast(ray, out var hit, float.PositiveInfinity, ~0, QueryTriggerInteraction.Collide))
-        {
-            return;
-        }
-
-        var clickedCoop = hit.collider.GetComponentInParent<ImageTrackedChickenCoopInstance>();
-
-        if (clickedCoop == null)
-        {
-            return;
-        }
-
-        ChickenCoopWasClicked = true;
-
-        SetStatus("Chicken Coop clicked!");
-        playerStats.PutChickensInCoop();
-
-        if (showDebugLogs)
-        {
-            Debug.Log($"Chicken Coop clicked: {clickedCoop.ImageName}");
-        }
-    }
 
     public void ResetClickedState()
     {

@@ -273,16 +273,11 @@ MonoBehaviour:
   arCamera: {fileID: 150719617}
   chickenCoops:
   - imageName: logo
-    prefab: {fileID: 3219100132830163551, guid: bfbf2e8ba019245148ca1709095f4007, type: 3}
+    prefab: {fileID: 6020407047204542801, guid: 0042f1d0cce20574ba0dd3b41c4e7972, type: 3}
     localPosition: {x: 0, y: 0, z: 0}
     localEulerAngles: {x: 90, y: 0, z: 0}
-    worldScale: {x: 0.15, y: 0.15, z: 0.15}
-  - imageName: faculty
-    prefab: {fileID: 3219100132830163551, guid: bfbf2e8ba019245148ca1709095f4007, type: 3}
-    localPosition: {x: 0, y: 0, z: 0}
-    localEulerAngles: {x: 90, y: 0, z: 0}
-    worldScale: {x: 0.15, y: 0.15, z: 0.15}
-  showDebugLogs: 1
+    worldScale: {x: 0.02, y: 0.02, z: 0.02}
+  showDebugLogs: 0
   playerStats: {fileID: 1964602098}
 --- !u!1 &150719610
 GameObject:
@@ -685,6 +680,17 @@ MonoBehaviour:
   m_ShadowLayerMask: 1
   m_RenderingLayers: 1
   m_ShadowRenderingLayers: 1
+--- !u!114 &444668025 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 9016591912054887315, guid: 4302f179cb5e4b34093ac8652294fd20, type: 3}
+  m_PrefabInstance: {fileID: 543580025}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
 --- !u!1001 &543580025
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -737,6 +743,14 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.x
       value: -260
       objectReference: {fileID: 0}
+    - target: {fileID: 401071694742114873, guid: 4302f179cb5e4b34093ac8652294fd20, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 3570782519782632282, guid: 4302f179cb5e4b34093ac8652294fd20, type: 3}
+      propertyPath: m_margin.y
+      value: -2.6518936
+      objectReference: {fileID: 0}
     - target: {fileID: 6094997661142338281, guid: 4302f179cb5e4b34093ac8652294fd20, type: 3}
       propertyPath: pointsText
       value: 
@@ -761,6 +775,14 @@ PrefabInstance:
       propertyPath: countdownTimer
       value: 
       objectReference: {fileID: 1036644049}
+    - target: {fileID: 6094997661142338281, guid: 4302f179cb5e4b34093ac8652294fd20, type: 3}
+      propertyPath: RoostersInCoopText
+      value: 
+      objectReference: {fileID: 1409508091}
+    - target: {fileID: 6094997661142338281, guid: 4302f179cb5e4b34093ac8652294fd20, type: 3}
+      propertyPath: RoostersInHandText
+      value: 
+      objectReference: {fileID: 444668025}
     - target: {fileID: 6480343039308848594, guid: 4302f179cb5e4b34093ac8652294fd20, type: 3}
       propertyPath: m_Name
       value: UI Variant
@@ -780,6 +802,10 @@ PrefabInstance:
     - target: {fileID: 8663318752692124795, guid: 4302f179cb5e4b34093ac8652294fd20, type: 3}
       propertyPath: m_fontColor.r
       value: 0.7924528
+      objectReference: {fileID: 0}
+    - target: {fileID: 8935153296960410499, guid: 4302f179cb5e4b34093ac8652294fd20, type: 3}
+      propertyPath: m_text
+      value: 
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -993,6 +1019,84 @@ Transform:
   - {fileID: 150719611}
   m_Father: {fileID: 32534273}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1388376332
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1388376334}
+  - component: {fileID: 1388376333}
+  m_Layer: 0
+  m_Name: ChickenSpawner
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1388376333
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1388376332}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5529e01812697534b874ef42d47e9e3e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ChickenSpawner
+  chickenPrefab: {fileID: 4514201221018379035, guid: 4b041ffb958c2664695291f498becff2, type: 3}
+  roosterPrefab: {fileID: 6636830342565921598, guid: 042487e26da51ce438bfa07cc65605ba, type: 3}
+  planeManager: {fileID: 32534271}
+  arCamera: {fileID: 150719617}
+  playerStats: {fileID: 1964602098}
+  spawnInterval: 1.76
+  maxActiveChickens: 10
+  maxActiveRoosters: 1
+  chickenPoints: 1
+  chickenScale: 0.00305
+  speedIncrementPerCatch: 0.256
+  maxSpeedMultiplier: 10
+  chickenCatchSound: {fileID: 8300000, guid: 30d3677ce29e0c44ca4c631e2788bcb4, type: 3}
+  roosterCatchSound: {fileID: 8300000, guid: 23c011450a22ff046bd4d6060e9a4911, type: 3}
+  smokeSize: 12
+  smokeSpeed: 50
+  smokeCount: 12
+  smokeLifetime: 0.6
+  smokeCloudRadius: 1
+  starsSize: 4
+  starsSpeed: 90
+  starsCount: 8
+  starsLifetime: 0.4
+--- !u!4 &1388376334
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1388376332}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.9973, y: 0, z: -7.69603}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1409508091 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 6686474165121427947, guid: 4302f179cb5e4b34093ac8652294fd20, type: 3}
+  m_PrefabInstance: {fileID: 543580025}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
 --- !u!1 &1548152854
 GameObject:
   m_ObjectHideFlags: 0
@@ -1219,6 +1323,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5cdd56809a6944f42800b3707ff2dbaf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerStats
+  arCamera: {fileID: 150719617}
+  cs: {fileID: 1388376333}
+  putInCoopSound: {fileID: 8300000, guid: c2d3a76fda9d76f44841356105a50611, type: 3}
 --- !u!4 &1964602099
 Transform:
   m_ObjectHideFlags: 0
@@ -1244,3 +1351,4 @@ SceneRoots:
   - {fileID: 1183888491}
   - {fileID: 1964602099}
   - {fileID: 543580025}
+  - {fileID: 1388376334}

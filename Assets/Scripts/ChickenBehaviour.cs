@@ -6,6 +6,8 @@ public class ChickenBehaviour : MonoBehaviour
     [SerializeField] private float wanderRadius = 0.6f;
     [SerializeField] private float directionChangeInterval = 2.5f;
 
+    public bool IsRooster { get; set; }
+
     public string ChickenId { get; private set; }
     public int Points { get; private set; } = 10;
     public float SpeedMultiplier { get; set; } = 1f;
@@ -15,10 +17,11 @@ public class ChickenBehaviour : MonoBehaviour
     private Vector3 wanderTarget;
     private float directionTimer;
 
-    public void Configure(string id, int points, Vector3 normal)
+    public void Configure(string id, int points, bool isRooster, Vector3 normal)
     {
         ChickenId = id;
         Points = points;
+        IsRooster = isRooster;
         planeNormal = normal.normalized;
         spawnPosition = transform.position;
         PickNewWanderTarget();
