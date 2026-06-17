@@ -8,7 +8,13 @@
 [Mm]emoryCaptures/
 
 UserSettings/
-
+.vscode
+.utmp
+Ayh*
+game*
+My*
+BIP-Project.slnx
+*/Assembly*
 Library/PackageCache/
 Library/Bee/
 
