@@ -90,6 +90,7 @@ public class PlayerStats : MonoBehaviour
         ChickensInCoop = 0;
         RoostersInHand = 0;
         RoostersInCoop = 0;
+        cs.TotalCatches = 0;
         PlayerPrefs.Save();
         StatsChanged?.Invoke();
         Debug.Log("PlayerStats: progress reset.");

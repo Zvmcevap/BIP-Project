@@ -52,7 +52,7 @@ public class ChickenSpawner : MonoBehaviour
 
     // Raised after each successful catch; arg is the total catch count this session.
     public event Action<int> ChickenCaught;
-    private int totalCatches;
+    public int TotalCatches { get; set; }
     private float spawnTimer;
     private readonly List<ChickenBehaviour> activeChickens = new();
     private readonly List<ChickenBehaviour> activeRoosters = new();
@@ -60,7 +60,7 @@ public class ChickenSpawner : MonoBehaviour
     private AudioSource audioSource;
 
     private float CurrentSpeedMultiplier =>
-        Mathf.Min(1f + totalCatches * speedIncrementPerCatch, maxSpeedMultiplier);
+        Mathf.Min(1f + TotalCatches * speedIncrementPerCatch, maxSpeedMultiplier);
 
     private void Awake()
     {
@@ -194,7 +194,7 @@ public class ChickenSpawner : MonoBehaviour
             activeChickens.Remove(chicken);
         }
 
-        totalCatches++;
+        TotalCatches++;
 
         var multiplier = CurrentSpeedMultiplier;
         foreach (var c in activeChickens)
@@ -221,9 +221,9 @@ public class ChickenSpawner : MonoBehaviour
         }
 
         Destroy(chicken.gameObject);
-        ChickenCaught?.Invoke(totalCatches);
+        ChickenCaught?.Invoke(TotalCatches);
 
-        Debug.Log($"ChickenSpawner: catch #{totalCatches}, speed now {multiplier:F2}x.");
+        Debug.Log($"ChickenSpawner: catch #{TotalCatches}, speed now {multiplier:F2}x.");
     }
 
     public void SpawnFeatherBurst(Vector3 position)
