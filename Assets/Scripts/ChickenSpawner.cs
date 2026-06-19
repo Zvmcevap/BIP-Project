@@ -36,7 +36,6 @@ public class ChickenSpawner : MonoBehaviour
     [SerializeField] private AudioClip chickenCatchSound;
     [SerializeField] private AudioClip roosterCatchSound;
 
-
     [Header("Smoke Effect")]
     [SerializeField, Range(1f, 30f)] private float smokeSize = 12f;
     [SerializeField, Range(10f, 100f)] private float smokeSpeed = 50f;
@@ -90,7 +89,7 @@ public class ChickenSpawner : MonoBehaviour
         spawnTimer = spawnInterval;
         TrySpawnChicken();
     }
-
+    
     private void TrySpawnChicken()
     {
         if (planeManager == null)
@@ -208,13 +207,13 @@ public class ChickenSpawner : MonoBehaviour
 
         SpawnFeatherBurst(chicken.transform.position);
 
-        if (audioSource != null && chickenCatchSound != null)
+        if (audioSource != null)
         {
-            if (chicken.IsRooster)
+            if (chicken.IsRooster && roosterCatchSound != null)
             {
                 audioSource.PlayOneShot(roosterCatchSound);
             }
-            else
+            else if (!chicken.IsRooster && chickenCatchSound != null)
             {
                 audioSource.PlayOneShot(chickenCatchSound);
             }

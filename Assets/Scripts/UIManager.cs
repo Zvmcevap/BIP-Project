@@ -7,7 +7,7 @@ public class UIManager : MonoBehaviour
     [Header("References")]
     [SerializeField] private ImageTrackedChickenCoop collectibles;
     [SerializeField] private PlayerStats playerStats;
-    [SerializeField] private CountdownTimer countdownTimer;
+    // [SerializeField] private CountdownTimer countdownTimer;
 
     [SerializeField] private TMP_Text statusText;
     [SerializeField] private TMP_Text collectedText;
@@ -55,7 +55,7 @@ public class UIManager : MonoBehaviour
     public void ResetStats()
     {
         playerStats.ResetAllProgressInThisApp();
-        countdownTimer.ResetTimer();
+        // countdownTimer.ResetTimer();
     }
 
     private void UpdateStatus(string status)

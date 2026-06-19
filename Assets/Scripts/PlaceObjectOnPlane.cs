@@ -11,7 +11,6 @@ public class PlaceObjectOnPlane : MonoBehaviour
     [SerializeField] private ARRaycastManager raycastManager;
     [SerializeField] private GameObject prefabToPlace;
     [SerializeField] private bool alignVisualBottomToPlane = true;
-    [SerializeField] private bool showDebugText = true;
     [SerializeField] private bool addBlobShadow = true;
     [SerializeField] private float shadowSize = 0.65f;
     [SerializeField, Range(0f, 1f)] private float shadowOpacity = 0.68f;

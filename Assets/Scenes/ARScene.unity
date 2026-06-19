@@ -132,7 +132,6 @@ GameObject:
   - component: {fileID: 32534271}
   - component: {fileID: 32534270}
   - component: {fileID: 32534275}
-  - component: {fileID: 32534276}
   - component: {fileID: 32534277}
   m_Layer: 0
   m_Name: XR Origin
@@ -226,37 +225,6 @@ MonoBehaviour:
   m_SerializedLibrary: {fileID: 11400000, guid: d7f9b3086dacd41dbb97ff26f31243cc, type: 2}
   m_MaxNumberOfMovingImages: 1
   m_TrackedImagePrefab: {fileID: 0}
---- !u!114 &32534276
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 32534269}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7a003f5f1ab21406aad5d370c4365957, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::ImageTrackedCollectibles
-  trackedImageManager: {fileID: 32534275}
-  arCamera: {fileID: 150719617}
-  playerStats: {fileID: 1964602098}
-  showDebugText: 0
-  collectibles:
-  - imageName: logo
-    collectibleId: L
-    prefab: {fileID: 3219100132830163551, guid: bfbf2e8ba019245148ca1709095f4007, type: 3}
-    points: 100
-    localPosition: {x: 0, y: 0, z: 0}
-    localEulerAngles: {x: 90, y: 0, z: 0}
-    worldScale: {x: 0.1, y: 0.1, z: 0.1}
-  - imageName: faculty
-    collectibleId: F
-    prefab: {fileID: 3219100132830163551, guid: bfbf2e8ba019245148ca1709095f4007, type: 3}
-    points: 100
-    localPosition: {x: 0, y: 0, z: 0}
-    localEulerAngles: {x: 90, y: 0, z: 0}
-    worldScale: {x: 0.1, y: 0.1, z: 0.1}
 --- !u!114 &32534277
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -774,7 +742,7 @@ PrefabInstance:
     - target: {fileID: 6094997661142338281, guid: 4302f179cb5e4b34093ac8652294fd20, type: 3}
       propertyPath: countdownTimer
       value: 
-      objectReference: {fileID: 1036644049}
+      objectReference: {fileID: 0}
     - target: {fileID: 6094997661142338281, guid: 4302f179cb5e4b34093ac8652294fd20, type: 3}
       propertyPath: RoostersInCoopText
       value: 
@@ -786,6 +754,30 @@ PrefabInstance:
     - target: {fileID: 6480343039308848594, guid: 4302f179cb5e4b34093ac8652294fd20, type: 3}
       propertyPath: m_Name
       value: UI Variant
+      objectReference: {fileID: 0}
+    - target: {fileID: 6717405218010230573, guid: 4302f179cb5e4b34093ac8652294fd20, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 6717405218010230573, guid: 4302f179cb5e4b34093ac8652294fd20, type: 3}
+      propertyPath: m_Color.a
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6717405218010230573, guid: 4302f179cb5e4b34093ac8652294fd20, type: 3}
+      propertyPath: m_Color.b
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6717405218010230573, guid: 4302f179cb5e4b34093ac8652294fd20, type: 3}
+      propertyPath: m_Color.g
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6717405218010230573, guid: 4302f179cb5e4b34093ac8652294fd20, type: 3}
+      propertyPath: m_Color.r
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8040935382494485880, guid: 4302f179cb5e4b34093ac8652294fd20, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: -520
       objectReference: {fileID: 0}
     - target: {fileID: 8663318752692124795, guid: 4302f179cb5e4b34093ac8652294fd20, type: 3}
       propertyPath: m_margin.x
@@ -808,12 +800,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 0}
     m_RemovedComponents: []
-    m_RemovedGameObjects: []
+    m_RemovedGameObjects:
+    - {fileID: 556438106838923580, guid: 4302f179cb5e4b34093ac8652294fd20, type: 3}
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 556438106838923580, guid: 4302f179cb5e4b34093ac8652294fd20, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1036644046}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4302f179cb5e4b34093ac8652294fd20, type: 3}
 --- !u!114 &602503468 stripped
 MonoBehaviour:
@@ -875,47 +865,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &1036644044 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 556438106838923580, guid: 4302f179cb5e4b34093ac8652294fd20, type: 3}
-  m_PrefabInstance: {fileID: 543580025}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &1036644046
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1036644044}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: dd6244fef07709843ba7d2615f178cc2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::CountdownTimer
-  timerText: {fileID: 1036644047}
-  startTimeInSeconds: 60
---- !u!114 &1036644047 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 2669272398696664611, guid: 4302f179cb5e4b34093ac8652294fd20, type: 3}
-  m_PrefabInstance: {fileID: 543580025}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1036644044}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
---- !u!114 &1036644049 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 5213114240279021581, guid: 4302f179cb5e4b34093ac8652294fd20, type: 3}
-  m_PrefabInstance: {fileID: 543580025}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1036644044}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: dd6244fef07709843ba7d2615f178cc2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::CountdownTimer
 --- !u!1 &1183888488
 GameObject:
   m_ObjectHideFlags: 0
@@ -1058,10 +1007,11 @@ MonoBehaviour:
   maxActiveRoosters: 1
   chickenPoints: 1
   chickenScale: 0.00305
-  speedIncrementPerCatch: 0.256
-  maxSpeedMultiplier: 10
+  speedIncrementPerCatch: 0.2
+  maxSpeedMultiplier: 7.5
   chickenCatchSound: {fileID: 8300000, guid: 30d3677ce29e0c44ca4c631e2788bcb4, type: 3}
   roosterCatchSound: {fileID: 8300000, guid: 23c011450a22ff046bd4d6060e9a4911, type: 3}
+  cottonEyeJoe: {fileID: 8300000, guid: aef3b6d192d30e54c88f2c57e3e33c8c, type: 3}
   smokeSize: 12
   smokeSpeed: 50
   smokeCount: 12
@@ -1179,7 +1129,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 13ba6c7dcf018774188089a14bef0f85, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AudioManager
-  collectibles: {fileID: 32534276}
+  collectibles: {fileID: 0}
   audioSource: {fileID: 1548152860}
   sounds:
   - collectibleId: L
